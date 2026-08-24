@@ -15,6 +15,9 @@ def emotion_detector_route():
 
     result = emotion_detector(text_to_analyze)
 
+    if result["dominant_emotion"] is None:
+        return "Invalid text! Please try again!"
+
     anger = result["anger"]
     disgust = result["disgust"]
     fear = result["fear"]
@@ -30,7 +33,6 @@ def emotion_detector_route():
     )
 
     return response
-
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)

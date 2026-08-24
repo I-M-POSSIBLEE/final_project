@@ -1,6 +1,7 @@
 import requests
 import json
 
+
 def emotion_detector(text_to_analyze):
     url = "https://sn-watson-emotion.labs.skills.network/v1/watson.runtime.nlp.v1/NlpService/EmotionPredict"
 
@@ -20,20 +21,28 @@ def emotion_detector(text_to_analyze):
         json=input_json
     )
 
-    # Convert response text into a Python dictionary
+    # Handle blank/invalid input
+    if response.status_code == 400:
+        return {
+            "anger": None,
+            "disgust": None,
+            "fear": None,
+            "joy": None,
+            "sadness": None,
+            "dominant_emotion": None
+        }
+
+    # Convert response text to dictionary
     response_dict = json.loads(response.text)
 
     # Extract emotion scores
-    emotions = response_dict["emotionPredictions"][0]["emotion"]
+    anger_score = response_dict["emotionPredictions"][0]["emotion"]["anger"]
+    disgust_score = response_dict["emotionPredictions"][0]["emotion"]["disgust"]
+    fear_score = response_dict["emotionPredictions"][0]["emotion"]["fear"]
+    joy_score = response_dict["emotionPredictions"][0]["emotion"]["joy"]
+    sadness_score = response_dict["emotionPredictions"][0]["emotion"]["sadness"]
 
-    anger_score = emotions["anger"]
-    disgust_score = emotions["disgust"]
-    fear_score = emotions["fear"]
-    joy_score = emotions["joy"]
-    sadness_score = emotions["sadness"]
-
-    # Find the dominant emotion
-    emotion_scores = {
+    emotions = {
         "anger": anger_score,
         "disgust": disgust_score,
         "fear": fear_score,
@@ -41,12 +50,8 @@ def emotion_detector(text_to_analyze):
         "sadness": sadness_score
     }
 
-    dominant_emotion = max(
-        emotion_scores,
-        key=emotion_scores.get
-    )
+    dominant_emotion = max(emotions, key=emotions.get)
 
-    # Return the required format
     return {
         "anger": anger_score,
         "disgust": disgust_score,
