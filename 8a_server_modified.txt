@@ -16,10 +16,10 @@ def render_index_page():
 
 @app.route("/emotionDetector")
 def emotion_detector_route():
-    """Analyze the user's text and return the detected emotions."""
-    text_to_analyze = request.args.get("textToAnalyze")
+    """analyse the user's text and return the detected emotions."""
+    text_to_analyse = request.args.get("textToanalyse")
 
-    result = emotion_detector(text_to_analyze)
+    result = emotion_detector(text_to_analyse)
 
     if result["dominant_emotion"] is None:
         return "Invalid text! Please try again!"
